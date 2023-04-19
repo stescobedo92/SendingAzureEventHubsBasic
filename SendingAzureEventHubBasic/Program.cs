@@ -12,10 +12,24 @@ namespace SendingAzureEventHubBasic
             string namespaceConnectionString = "Endpoint=sb://resources-events.servicebus.windows.net/;SharedAccessKeyName=sendandreceive;SharedAccessKey=B87i7DCK7Wk7UL52UQ9MgKdLI/GOPvb3t+AEhHRa0Hk=;EntityPath=demoevnethub";
             string eventHubName = "demoevnethub";
 
-            await SendAndEnumerableOfEvens(namespaceConnectionString, eventHubName);
+            await SendAndEnumerableOfEvents(namespaceConnectionString, eventHubName);
         }
 
-        private static async Task SendAndEnumerableOfEvens(string namespaceConnectionString, string eventHubName)
+        private static async Task SendBatchOfEvents(string namespaceConnectionString, string eventHubName)
+        {
+            EventHubProducerClient producer = new EventHubProducerClient(namespaceConnectionString, eventHubName);
+            
+            var batch = await producer.CreateBatchAsync();
+
+            for (int i = 0; i < 10; i++)
+            {
+                batch.TryAdd(new EventData($"This is event: {i}"));
+            }
+
+            await producer.SendAsync(batch);
+        }
+
+        private static async Task SendAndEnumerableOfEvents(string namespaceConnectionString, string eventHubName)
         {
             EventHubProducerClient producer = new EventHubProducerClient(namespaceConnectionString, eventHubName);
             List<EventData> events = new List<EventData>();
@@ -26,7 +40,6 @@ namespace SendingAzureEventHubBasic
             }
 
             await producer.SendAsync(events);
-            Console.WriteLine("Sent the events");
         }
     }
 }
