@@ -24,7 +24,7 @@ namespace SendingAzureEventHubBasic
             
             var batch = await producer.CreateBatchAsync();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 batch.TryAdd(new EventData($"This is event: {i}"));
             }
@@ -37,12 +37,12 @@ namespace SendingAzureEventHubBasic
             EventHubProducerClient producer = new EventHubProducerClient(namespaceConnectionString, eventHubName);
             List<EventData> events = new List<EventData>();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 events.Add(new EventData($"This is event: {i}"));
             }
 
-            await producer.SendAsync(events);
+            await producer.SendAsync(events, new SendEventOptions { PartitionKey = "This is a partition key"});
         }
     }
 }
