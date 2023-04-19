@@ -13,6 +13,9 @@ namespace SendingAzureEventHubBasic
             string eventHubName = "demoevnethub";
 
             await SendAndEnumerableOfEvents(namespaceConnectionString, eventHubName);
+            await SendBatchOfEvents(namespaceConnectionString, eventHubName);
+
+            Console.WriteLine("Sent the events");
         }
 
         private static async Task SendBatchOfEvents(string namespaceConnectionString, string eventHubName)
